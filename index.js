@@ -29,6 +29,7 @@ async function run() {
     await client.connect();
 
     const topFoodsCollection = client.db("restaurantDB").collection("topFoods");
+    const allFoodItemsCollection = client.db("restaurantDB").collection("allFoodItems");
 
 
 
@@ -38,6 +39,16 @@ async function run() {
         const result = await cursor.toArray()
         res.send(result)
     })
+
+
+    //--------------------------------------------------------
+
+    // AllFoodItemsCollection
+    app.get('/allFoodItems', async(req,res)=>{
+      const cursor = allFoodItemsCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+  })
 
 
 
