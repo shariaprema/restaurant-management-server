@@ -30,6 +30,7 @@ async function run() {
 
     const topFoodsCollection = client.db("restaurantDB").collection("topFoods");
     const allFoodItemsCollection = client.db("restaurantDB").collection("allFoodItems");
+    const purchaseFoodCollection = client.db("restaurantDB").collection("purchaseFood");
 
 
 
@@ -42,15 +43,30 @@ async function run() {
 
 
     //--------------------------------------------------------
-
+    //pagination
     // AllFoodItemsCollection
     app.get('/allFoodItems', async(req,res)=>{
-      const cursor = allFoodItemsCollection.find();
+      const query = req.query;
+      const page = query.page
+      const pageNumber = parseInt(page);
+      const perPage = 9;
+      const skip = pageNumber * perPage
+      const cursor = allFoodItemsCollection.find().skip(skip).limit(perPage);
       const result = await cursor.toArray()
-      res.send(result)
+      const postCount = await allFoodItemsCollection.countDocuments()
+      res.json({result,postCount})
   })
 
 
+
+
+
+
+
+
+
+
+//---------------------------------------------------------------------
   app.get("/allFoodItems/:id", async (req, res) => {
     const id = req.params.id;
     const query = {
@@ -60,6 +76,32 @@ async function run() {
     console.log(result);
     res.send(result);
   });
+
+
+  app.get("/foodPurchase/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = {
+      _id: new ObjectId(id),
+    };
+    const result = await allFoodItemsCollection.findOne(query);
+    console.log(result);
+    res.send(result);
+  });
+
+
+
+
+
+  // purchaseFoodCollection:
+
+  app.post("/purchaseFood", async (req, res) => {
+    const purchase = req.body;
+    console.log(purchase);
+    const result = await purchaseFoodCollection.insertOne(purchase);
+    res.send(result);
+  });
+
+
 
 
 
