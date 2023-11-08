@@ -133,6 +133,41 @@ async function run() {
   })
 
 
+  app.get("/addFoodItem/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await addFoodItemFoodCollection.findOne(query);
+      res.send(result);
+    });
+
+
+    app.put("/addFoodItem/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedFood = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updated = {
+        $set: {
+           price: updatedFood.price,
+           userName: updatedFood.userName,
+           userEmail: updatedFood.userEmail,
+           foodName: updatedFood.foodName,
+           foodOrigin: updatedFood.foodOrigin,
+           foodImage: updatedFood.foodImage,
+           foodCategory: updatedFood.foodCategory,
+           quantity: updatedFood.quantity,
+           description: updatedFood.description
+        },
+      };
+      const result = await addFoodItemFoodCollection.updateOne(
+        filter,
+        updated,
+        options
+      );
+      res.send(result);
+    });
+
+
 
 
 
