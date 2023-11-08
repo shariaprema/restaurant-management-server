@@ -31,6 +31,8 @@ async function run() {
     const topFoodsCollection = client.db("restaurantDB").collection("topFoods");
     const allFoodItemsCollection = client.db("restaurantDB").collection("allFoodItems");
     const purchaseFoodCollection = client.db("restaurantDB").collection("purchaseFood");
+    const addFoodItemFoodCollection = client.db("restaurantDB").collection("addFoodItem");
+
 
 
 
@@ -100,6 +102,21 @@ async function run() {
     const result = await purchaseFoodCollection.insertOne(purchase);
     res.send(result);
   });
+
+
+
+
+  //My Profile
+
+  // addFoodItemFoodCollection
+ 
+  app.post("/addFoodItem", async (req, res) => {
+    const addNewFood = req.body;
+    const result = await addFoodItemFoodCollection.insertOne(addNewFood)
+    res.send(result);
+  });
+
+
 
 
 
