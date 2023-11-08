@@ -48,7 +48,14 @@ async function run() {
     //pagination
     // AllFoodItemsCollection
     app.get('/allFoodItems', async(req,res)=>{
-      const query = req.query;
+      // const query = req.query;
+
+      let query = {}
+      if(req.query?.email){
+        query={email:req.query.email}
+      }
+
+      //....pore dekhbo
       const page = query.page
       const pageNumber = parseInt(page);
       const perPage = 9;
@@ -107,14 +114,23 @@ async function run() {
 
 
   //My Profile
-
   // addFoodItemFoodCollection
  
+    app.get('/addFoodItem', async(req,res)=>{
+      let query = {}
+      if(req.query?.email){
+        query={email:req.query.email}
+      }
+      const cursor = addFoodItemFoodCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+  })
+
   app.post("/addFoodItem", async (req, res) => {
     const addNewFood = req.body;
     const result = await addFoodItemFoodCollection.insertOne(addNewFood)
     res.send(result);
-  });
+  })
 
 
 
