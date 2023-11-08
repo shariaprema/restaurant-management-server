@@ -55,7 +55,6 @@ async function run() {
         query={email:req.query.email}
       }
 
-      //....pore dekhbo
       const page = query.page
       const pageNumber = parseInt(page);
       const perPage = 9;
@@ -65,12 +64,6 @@ async function run() {
       const postCount = await allFoodItemsCollection.countDocuments()
       res.json({result,postCount})
   })
-
-
-
-
-
-
 
 
 
@@ -111,6 +104,35 @@ async function run() {
   });
 
 
+   app.get('/purchaseFood', async(req,res)=>{
+      let query = {}
+      if(req.query?.email){
+        query={email: req.query.email}
+      }
+      const cursor = purchaseFoodCollection.find(query);
+      const result = await cursor.toArray()
+      res.send(result)
+  })
+
+  app.delete("/purchaseFood/:id", async (req, res) => {
+    const id = req.params.id;
+    
+    const query = {
+      _id: new ObjectId(id),
+    };
+    const result = await purchaseFoodCollection.deleteOne(query);
+    console.log(result);
+    res.send(result);
+  });
+
+
+
+
+
+
+
+
+
 
 
   //My Profile
@@ -121,12 +143,12 @@ async function run() {
       if(req.query?.email){
         query={email:req.query.email}
       }
-      const cursor = addFoodItemFoodCollection.find();
+      const cursor = addFoodItemFoodCollection.find(query);
       const result = await cursor.toArray()
       res.send(result)
   })
 
-  app.post("/addFoodItem", async (req, res) => {
+  app.post('/addFoodItem', async (req, res) => {
     const addNewFood = req.body;
     const result = await addFoodItemFoodCollection.insertOne(addNewFood)
     res.send(result);
