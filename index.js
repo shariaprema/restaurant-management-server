@@ -9,9 +9,9 @@ const port = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+const uri =`mongodb+srv://userRestho:user123456@cluster0.socuaah.mongodb.net/?retryWrites=true&w=majority`;
 
-
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.socuaah.mongodb.net/?retryWrites=true&w=majority`;
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.socuaah.mongodb.net/?retryWrites=true&w=majority`;
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -26,12 +26,13 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const topFoodsCollection = client.db("restaurantDB").collection("topFoods");
     const allFoodItemsCollection = client.db("restaurantDB").collection("allFoodItems");
     const purchaseFoodCollection = client.db("restaurantDB").collection("purchaseFood");
     const addFoodItemFoodCollection = client.db("restaurantDB").collection("addFoodItem");
+    // const userCollection = client.db("restaurantDB").collection("user");
 
 
 
@@ -109,7 +110,8 @@ async function run() {
       if(req.query?.email){
         query={email: req.query.email}
       }
-      const cursor = purchaseFoodCollection.find(query);
+      const cursor = purchaseFoodCollection.find(query
+        );
       const result = await cursor.toArray()
       res.send(result)
   })
@@ -141,7 +143,7 @@ async function run() {
     app.get('/addFoodItem', async(req,res)=>{
       let query = {}
       if(req.query?.email){
-        query={email:req.query.email}
+        query={email:req?.query?.email}
       }
       const cursor = addFoodItemFoodCollection.find(query);
       const result = await cursor.toArray()
@@ -164,11 +166,12 @@ async function run() {
 
 
     app.put("/addFoodItem/:id", async (req, res) => {
-      const id = req.params.id;
-      const updatedFood = req.body;
-      const filter = { _id: new ObjectId(id) };
+      const id = req?.params?.id;
+      const filter = {_id: new ObjectId(id)}
+      console.log("anar data ekhane",filter);
       const options = { upsert: true };
-      const updated = {
+      const updatedFood = req.body;
+      const foods = {
         $set: {
            price: updatedFood.price,
            userName: updatedFood.userName,
@@ -183,13 +186,21 @@ async function run() {
       };
       const result = await addFoodItemFoodCollection.updateOne(
         filter,
-        updated,
+        foods,
         options
       );
       res.send(result);
     });
 
 
+
+    //mailCollection
+
+  //   app.get('/user', async (req, res) => {
+  //     const cursor = userCollection.find();
+  //     const users = await cursor.toArray();
+  //     res.send(users);
+  // })
 
 
 
